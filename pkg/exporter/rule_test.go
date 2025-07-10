@@ -1,9 +1,10 @@
 package exporter
 
 import (
+	"testing"
+
 	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestEmptyRule(t *testing.T) {

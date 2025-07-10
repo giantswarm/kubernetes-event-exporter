@@ -4,8 +4,8 @@ import (
 	"context"
 	"strings"
 
-	lru "github.com/hashicorp/golang-lru"
 	"github.com/giantswarm/kubernetes-event-exporter/pkg/metrics"
+	lru "github.com/hashicorp/golang-lru"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"

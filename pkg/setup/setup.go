@@ -4,8 +4,8 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/goccy/go-yaml"
 	"github.com/giantswarm/kubernetes-event-exporter/pkg/exporter"
+	"github.com/goccy/go-yaml"
 )
 
 func ParseConfigFromBytes(configBytes []byte) (exporter.Config, error) {

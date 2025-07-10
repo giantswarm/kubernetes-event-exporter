@@ -3,8 +3,9 @@ package sinks
 import (
 	"context"
 	"encoding/json"
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
 	"log/syslog"
+
+	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
 )
 
 type SyslogConfig struct {

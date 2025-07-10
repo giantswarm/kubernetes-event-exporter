@@ -1,10 +1,11 @@
 package exporter
 
 import (
+	"testing"
+
 	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
 	"github.com/giantswarm/kubernetes-event-exporter/pkg/sinks"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestEngineNoRoutes(t *testing.T) {

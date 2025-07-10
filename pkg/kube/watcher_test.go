@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/giantswarm/kubernetes-event-exporter/pkg/metrics"
 	lru "github.com/hashicorp/golang-lru"
 	"github.com/prometheus/client_golang/prometheus/testutil"
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/metrics"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

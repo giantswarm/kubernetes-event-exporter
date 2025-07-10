@@ -6,11 +6,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
 	"github.com/rs/zerolog/log"
 )
 
@@ -93,7 +94,7 @@ func (l *Loki) Send(ctx context.Context, ev *kube.EnhancedEvent) error {
 
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}
