@@ -27,7 +27,7 @@ kubectl create namespace monitoring
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - https://github.com/resmoio/kubernetes-event-exporter?ref=master
+  - https://github.com/giantswarm/kubernetes-event-exporter?ref=main
 ```
 
 ### Helm
