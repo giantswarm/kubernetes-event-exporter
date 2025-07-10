@@ -1,0 +1,30 @@
+version: 2.1
+
+orbs:
+  architect: giantswarm/architect@6.2.1
+
+
+workflows:
+  build:
+    jobs:
+    - architect/go-build:
+        name: go-build-kubernetes-event-exporter
+        binary: kubernetes-event-exporter
+        filters:
+            # Trigger the job also on git tag.
+          tags:
+            only: /^v.*/
+
+    - architect/push-to-registries:
+        context: architect
+        name: push-to-registries
+        requires:
+        - go-build-kubernetes-event-exporter
+        filters:
+          tags:
+            only: /^v.*/
+          branches:
+            ignore:
+            - main
+            - master
+

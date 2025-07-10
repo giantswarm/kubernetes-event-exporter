@@ -5,7 +5,7 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/resmoio/kubernetes-event-exporter/pkg/kube"
+	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
 	"github.com/rs/zerolog/log"
 	"github.com/slack-go/slack"
 )
