@@ -1,6 +1,8 @@
 package kube
 
 import (
+	"regexp"
+	"strings"
 	"sync"
 	"time"
 
@@ -31,9 +33,10 @@ type EventWatcher struct {
 	metricsStore        *metrics.Store
 	dynamicClient       *dynamic.DynamicClient
 	clientset           *kubernetes.Clientset
+	watchKinds          map[string]struct{}
 }
 
-func NewEventWatcher(config *rest.Config, namespace string, MaxEventAgeSeconds int64, metricsStore *metrics.Store, fn EventHandler, omitLookup bool, cacheSize int) *EventWatcher {
+func NewEventWatcher(config *rest.Config, namespace string, MaxEventAgeSeconds int64, metricsStore *metrics.Store, fn EventHandler, omitLookup bool, cacheSize int, watchKinds []string) *EventWatcher {
 	clientset := kubernetes.NewForConfigOrDie(config)
 	factory := informers.NewSharedInformerFactoryWithOptions(clientset, 0, informers.WithNamespace(namespace))
 	informer := factory.Core().V1().Events().Informer()
@@ -48,6 +51,7 @@ func NewEventWatcher(config *rest.Config, namespace string, MaxEventAgeSeconds i
 		metricsStore:        metricsStore,
 		dynamicClient:       dynamic.NewForConfigOrDie(config),
 		clientset:           clientset,
+		watchKinds:          kindsToMap(watchKinds),
 	}
 
 	informer.AddEventHandler(watcher)
@@ -109,14 +113,16 @@ func (e *EventWatcher) onEvent(event *corev1.Event) {
 	}
 	ev.Event.ManagedFields = nil
 
-	if e.omitLookup {
+	if e.omitLookup || !e.shouldLookup(ev) {
 		ev.InvolvedObject.ObjectReference = *event.InvolvedObject.DeepCopy()
 	} else {
 		objectMetadata, err := e.objectMetadataCache.GetObjectMetadata(&event.InvolvedObject, e.clientset, e.dynamicClient, e.metricsStore)
 		if err != nil {
 			if errors.IsNotFound(err) {
 				ev.InvolvedObject.Deleted = true
-				log.Error().Err(err).Msg("Object not found, likely deleted")
+				log.Warn().Err(err).Msg("Object not found, likely deleted")
+			} else if errors.IsForbidden(err) {
+				log.Debug().Err(err).Msg("failed to get object metadata, it is forbidden")
 			} else {
 				log.Error().Err(err).Msg("Failed to get object metadata")
 			}
@@ -152,4 +158,33 @@ func (e *EventWatcher) Stop() {
 
 func (e *EventWatcher) setStartUpTime(time time.Time) {
 	startUpTime = time
+}
+
+func (e *EventWatcher) shouldLookup(event *EnhancedEvent) bool {
+	if len(e.watchKinds) == 0 {
+		return true
+	}
+
+	for kind := range e.watchKinds {
+		matched, _ := regexp.MatchString(kind, event.InvolvedObject.Kind)
+		if matched {
+			return true
+		}
+	}
+
+	return false
+}
+
+func kindsToMap(kinds []string) map[string]struct{} {
+	if len(kinds) == 0 {
+		return nil
+	}
+
+	m := make(map[string]struct{})
+	for _, k := range kinds {
+		for _, s := range strings.Split(k, "|") {
+			m[s] = struct{}{}
+		}
+	}
+	return m
 }

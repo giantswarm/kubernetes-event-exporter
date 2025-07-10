@@ -113,3 +113,33 @@ func (c *Config) validateMetricsNamePrefix() error {
 	}
 	return nil
 }
+
+func (c *Config) GetWatchKinds() []string {
+	kinds := make(map[string]struct{})
+
+	var collectKinds func(r Route)
+	collectKinds = func(r Route) {
+		for _, rule := range r.Match {
+			if rule.Kind != "" {
+				kinds[rule.Kind] = struct{}{}
+			}
+		}
+		for _, rule := range r.Drop {
+			if rule.Kind != "" {
+				kinds[rule.Kind] = struct{}{}
+			}
+		}
+		for _, route := range r.Routes {
+			collectKinds(route)
+		}
+	}
+
+	collectKinds(c.Route)
+
+	var result []string
+	for k := range kinds {
+		result = append(result, k)
+	}
+
+	return result
+}
