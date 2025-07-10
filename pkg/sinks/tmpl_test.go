@@ -4,9 +4,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
 	"github.com/stretchr/testify/require"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
 )
 
 func TestLayoutConvert(t *testing.T) {

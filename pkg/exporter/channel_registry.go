@@ -4,10 +4,11 @@ import (
 	"context"
 	"sync"
 
+	"github.com/rs/zerolog/log"
+
 	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
 	"github.com/giantswarm/kubernetes-event-exporter/pkg/metrics"
 	"github.com/giantswarm/kubernetes-event-exporter/pkg/sinks"
-	"github.com/rs/zerolog/log"
 )
 
 // ChannelBasedReceiverRegistry creates two channels for each receiver. One is for receiving events and other one is

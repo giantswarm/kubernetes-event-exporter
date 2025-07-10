@@ -5,7 +5,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/metrics"
 	lru "github.com/hashicorp/golang-lru"
 	"github.com/prometheus/client_golang/prometheus/testutil"
 	"github.com/rs/zerolog/log"
@@ -18,6 +17,8 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
+
+	"github.com/giantswarm/kubernetes-event-exporter/pkg/metrics"
 )
 
 type mockObjectMetadataProvider struct {
