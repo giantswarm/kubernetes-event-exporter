@@ -3,9 +3,10 @@ package exporter
 import (
 	"context"
 
+	"github.com/rs/zerolog/log"
+
 	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
 	"github.com/giantswarm/kubernetes-event-exporter/pkg/sinks"
-	"github.com/rs/zerolog/log"
 )
 
 // SyncRegistry is for development purposes and performs poorly and blocks when an event is received so it is

@@ -9,8 +9,9 @@ import (
 	"github.com/aws/aws-sdk-go/aws/client"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/eventbridge"
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
 	"github.com/rs/zerolog/log"
+
+	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
 )
 
 type EventBridgeConfig struct {

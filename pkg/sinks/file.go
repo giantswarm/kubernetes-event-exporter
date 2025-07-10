@@ -5,8 +5,9 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
 	"gopkg.in/natefinch/lumberjack.v2"
+
+	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
 )
 
 type FileConfig struct {

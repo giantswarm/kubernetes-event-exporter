@@ -11,10 +11,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
 	opensearch "github.com/opensearch-project/opensearch-go"
 	opensearchapi "github.com/opensearch-project/opensearch-go/opensearchapi"
 	"github.com/rs/zerolog/log"
+
+	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
 )
 
 type OpenSearchConfig struct {

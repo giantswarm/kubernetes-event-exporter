@@ -11,8 +11,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
 	"github.com/rs/zerolog/log"
+
+	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
 )
 
 type promtailStream struct {

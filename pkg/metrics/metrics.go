@@ -5,13 +5,14 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/version"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/exporter-toolkit/web"
 	"github.com/rs/zerolog/log"
+
+	"github.com/giantswarm/kubernetes-event-exporter/pkg/version"
 )
 
 type Store struct {

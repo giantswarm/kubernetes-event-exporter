@@ -8,8 +8,9 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
 	"github.com/rs/zerolog/log"
+
+	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
 )
 
 type WebhookConfig struct {
