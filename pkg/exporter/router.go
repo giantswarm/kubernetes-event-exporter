@@ -1,6 +1,6 @@
 package exporter
 
-import "github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
+import "github.com/giantswarm/kubernetes-event-exporter/v2/pkg/kube"
 
 type Router struct {
 	cfg  *Config

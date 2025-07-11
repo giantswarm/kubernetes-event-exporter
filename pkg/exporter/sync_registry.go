@@ -5,8 +5,8 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/sinks"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/kube"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/sinks"
 )
 
 // SyncRegistry is for development purposes and performs poorly and blocks when an event is received so it is

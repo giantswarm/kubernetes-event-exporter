@@ -12,7 +12,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/ssm/ssmiface"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/kube"
 )
 
 type mockedCreateOps struct {

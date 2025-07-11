@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"log/syslog"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/kube"
 )
 
 type SyslogConfig struct {

@@ -11,10 +11,10 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/exporter"
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/metrics"
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/setup"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/exporter"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/kube"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/metrics"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/setup"
 )
 
 var (

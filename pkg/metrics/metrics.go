@@ -12,7 +12,7 @@ import (
 	"github.com/prometheus/exporter-toolkit/web"
 	"github.com/rs/zerolog/log"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/version"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/version"
 )
 
 type Store struct {

@@ -12,7 +12,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/restmapper"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/metrics"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/metrics"
 )
 
 type ObjectMetadataProvider interface {

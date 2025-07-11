@@ -7,7 +7,7 @@ import (
 
 	"github.com/Masterminds/sprig/v3"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/kube"
 )
 
 func GetString(event *kube.EnhancedEvent, text string) (string, error) {

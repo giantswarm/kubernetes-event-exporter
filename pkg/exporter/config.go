@@ -9,8 +9,8 @@ import (
 	"github.com/rs/zerolog/log"
 	"k8s.io/client-go/rest"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/sinks"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/kube"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/sinks"
 )
 
 const (

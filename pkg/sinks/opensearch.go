@@ -15,7 +15,7 @@ import (
 	opensearchapi "github.com/opensearch-project/opensearch-go/opensearchapi"
 	"github.com/rs/zerolog/log"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/kube"
 )
 
 type OpenSearchConfig struct {
