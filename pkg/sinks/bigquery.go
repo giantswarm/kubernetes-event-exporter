@@ -15,8 +15,8 @@ import (
 	"github.com/rs/zerolog/log"
 	"google.golang.org/api/option"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/batch"
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/batch"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/kube"
 )
 
 // Returns a map filtering out keys that have nil value assigned.

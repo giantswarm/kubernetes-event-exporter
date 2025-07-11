@@ -10,7 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/ssm"
 	"github.com/aws/aws-sdk-go/service/ssm/ssmiface"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/kube"
 )
 
 // OpsCenterConfig is the configuration of the Sink.

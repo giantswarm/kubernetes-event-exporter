@@ -18,7 +18,7 @@ import (
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/metrics"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/metrics"
 )
 
 type mockObjectMetadataProvider struct {

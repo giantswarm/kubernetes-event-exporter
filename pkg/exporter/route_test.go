@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/kube"
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/sinks"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/kube"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/sinks"
 )
 
 // testReceiverRegistry just records the events to the registry so that tests can validate routing behavior

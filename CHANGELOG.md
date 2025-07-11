@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2025-07-11
+
 ### Added
 
 - Add info log when forwarding events to a receiver.
@@ -20,4 +22,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/giantswarm/kubernetes-event-exporter/tree/main
+[Unreleased]: https://github.com/giantswarm/kubernetes-event-exporter/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/giantswarm/kubernetes-event-exporter/releases/tag/v2.0.0

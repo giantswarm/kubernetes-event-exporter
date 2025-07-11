@@ -15,7 +15,7 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/cache"
 
-	"github.com/giantswarm/kubernetes-event-exporter/pkg/metrics"
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/metrics"
 )
 
 var startUpTime = time.Now()
