@@ -43,12 +43,16 @@ func NewEventWatcher(config *rest.Config, namespace string, MaxEventAgeSeconds i
 	informerList := make([]cache.SharedInformer, 0)
 
 	if len(watchReasons) == 0 {
+		// Default behavior: one informer, no reason filtering
 		factory := informers.NewSharedInformerFactoryWithOptions(clientset, 0, informers.WithNamespace(namespace))
 		informerList = append(informerList, factory.Core().V1().Events().Informer())
 	} else {
+		// Create one informer per reason
 		for _, reason := range watchReasons {
+			// Create a new variable for the closure to capture.
+			r := reason
 			tweakListOptions := func(options *metav1.ListOptions) {
-				options.FieldSelector = fields.OneTermEqualSelector("reason", reason).String()
+				options.FieldSelector = fields.OneTermEqualSelector("reason", r).String()
 			}
 			factory := informers.NewSharedInformerFactoryWithOptions(clientset, 0, informers.WithNamespace(namespace), informers.WithTweakListOptions(tweakListOptions))
 			informerList = append(informerList, factory.Core().V1().Events().Informer())
