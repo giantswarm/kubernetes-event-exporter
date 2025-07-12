@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1] - 2025-07-12
+
 ### Fixed
 
 - Fix missing Slack channel ID when adding emoji reaction.
@@ -26,5 +28,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/giantswarm/kubernetes-event-exporter/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/giantswarm/kubernetes-event-exporter/compare/v2.0.1...HEAD
+[2.0.1]: https://github.com/giantswarm/kubernetes-event-exporter/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/giantswarm/kubernetes-event-exporter/releases/tag/v2.0.0
