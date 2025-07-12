@@ -72,7 +72,7 @@ func NewAvroEncoder(schemaID, schema string) (KafkaEncoder, error) {
 	}
 
 	if len(schemaID) != 32 {
-		return Avro{}, fmt.Errorf("Avro encoding requires a 32 character schemaID:schema id:%s:", schemaID)
+		return Avro{}, fmt.Errorf("avro encoding requires a 32 character schemaID, got schemaID: %s", schemaID)
 	}
 
 	return Avro{SchemaID: schemaID, codec: codec}, nil

@@ -95,7 +95,7 @@ func (s *OpsCenterSink) Send(ctx context.Context, ev *kube.EnhancedEvent) error 
 		}
 		n, err := strconv.ParseInt(p, 10, 64)
 		if err != nil {
-			return fmt.Errorf("Priority is a non int")
+			return fmt.Errorf("priority is a non int")
 		}
 		oi.Priority = aws.Int64(n)
 	}

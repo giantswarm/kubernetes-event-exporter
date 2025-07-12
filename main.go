@@ -51,15 +51,16 @@ func main() {
 		log.Logger = log.With().Caller().Logger().Level(zerolog.InfoLevel)
 	}
 
-	if cfg.LogFormat == "json" {
+	switch cfg.LogFormat {
+	case "json":
 		// Defaults to JSON already nothing to do
-	} else if cfg.LogFormat == "" || cfg.LogFormat == "pretty" {
+	case "", "pretty":
 		log.Logger = log.Logger.Output(zerolog.ConsoleWriter{
 			Out:        os.Stdout,
 			NoColor:    false,
 			TimeFormat: time.RFC3339,
 		})
-	} else {
+	default:
 		log.Fatal().Str("log_format", cfg.LogFormat).Msg("Unknown log format")
 	}
 

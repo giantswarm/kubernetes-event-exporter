@@ -185,15 +185,17 @@ func createSaramaProducer(cfg *KafkaConfig) (sarama.SyncProducer, error) {
 		saramaConfig.Net.SASL.Enable = true
 		saramaConfig.Net.SASL.User = cfg.SASL.Username
 		saramaConfig.Net.SASL.Password = cfg.SASL.Password
-		if cfg.SASL.Mechanism == "sha512" {
+
+		switch cfg.SASL.Mechanism {
+		case "sha512":
 			saramaConfig.Net.SASL.SCRAMClientGeneratorFunc = func() sarama.SCRAMClient { return &XDGSCRAMClient{HashGeneratorFcn: SHA512} }
 			saramaConfig.Net.SASL.Mechanism = sarama.SASLTypeSCRAMSHA512
-		} else if cfg.SASL.Mechanism == "sha256" {
+		case "sha256":
 			saramaConfig.Net.SASL.SCRAMClientGeneratorFunc = func() sarama.SCRAMClient { return &XDGSCRAMClient{HashGeneratorFcn: SHA256} }
 			saramaConfig.Net.SASL.Mechanism = sarama.SASLTypeSCRAMSHA256
-		} else if cfg.SASL.Mechanism == "plain" || cfg.SASL.Mechanism == "" {
+		case "plain", "":
 			saramaConfig.Net.SASL.Mechanism = sarama.SASLTypePlaintext
-		} else {
+		default:
 			return nil, fmt.Errorf("invalid scram sha mechanism: %s: can be one of 'sha256', 'sha512' or 'plain'", cfg.SASL.Mechanism)
 		}
 	}
