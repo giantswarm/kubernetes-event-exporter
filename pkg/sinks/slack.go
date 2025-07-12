@@ -28,10 +28,15 @@ type SlackConfig struct {
 	CompletionEmoji string `yaml:"completionEmoji,omitempty"`
 }
 
+type threadInfo struct {
+	Timestamp string
+	ChannelID string
+}
+
 type SlackSink struct {
 	cfg       *SlackConfig
 	client    *slack.Client
-	threadTS  map[string]string
+	threadTS  map[string]threadInfo
 	threadMux sync.Mutex
 }
 
@@ -42,7 +47,7 @@ func NewSlackSink(cfg *SlackConfig) (Sink, error) {
 	return &SlackSink{
 		cfg:      cfg,
 		client:   slack.New(cfg.Token),
-		threadTS: make(map[string]string),
+		threadTS: make(map[string]threadInfo),
 	}, nil
 }
 
@@ -77,7 +82,6 @@ func (s *SlackSink) Send(ctx context.Context, ev *kube.EnhancedEvent) error {
 			return fields[i].Title < fields[j].Title
 		})
 
-		// make slack attachment
 		slackAttachment := slack.Attachment{}
 		slackAttachment.Fields = fields
 		if s.cfg.AuthorName != "" {
@@ -109,23 +113,19 @@ func (s *SlackSink) Send(ctx context.Context, ev *kube.EnhancedEvent) error {
 	}
 
 	if s.cfg.ThreadKey == "" {
-		// No threading configured, send as is.
 		_ch, _ts, _text, err := s.client.SendMessageContext(ctx, channel, options...)
 		log.Debug().Str("ch", _ch).Str("ts", _ts).Str("text", _text).Err(err).Msg("Slack Response")
 		return err
 	}
 
-	// Threading is configured
 	threadKey, err := GetString(ev, s.cfg.ThreadKey)
 	if err != nil {
 		log.Warn().Err(err).Str("template", s.cfg.ThreadKey).Msg("Failed to execute threadKey template")
-		// Send as a normal message if template fails
 		_ch, _ts, _text, err := s.client.SendMessageContext(ctx, channel, options...)
 		log.Debug().Str("ch", _ch).Str("ts", _ts).Str("text", _text).Err(err).Msg("Slack Response")
 		return err
 	}
 	if threadKey == "" {
-		// Thread key is empty, send as normal message
 		_ch, _ts, _text, err := s.client.SendMessageContext(ctx, channel, options...)
 		log.Debug().Str("ch", _ch).Str("ts", _ts).Str("text", _text).Err(err).Msg("Slack Response")
 		return err
@@ -144,10 +144,10 @@ func (s *SlackSink) Send(ctx context.Context, ev *kube.EnhancedEvent) error {
 	s.threadMux.Lock()
 	defer s.threadMux.Unlock()
 
-	parentTS, found := s.threadTS[threadKey]
+	parentInfo, found := s.threadTS[threadKey]
 
 	if found {
-		options = append(options, slack.MsgOptionTS(parentTS))
+		options = append(options, slack.MsgOptionTS(parentInfo.Timestamp))
 	}
 
 	_ch, _ts, _text, err := s.client.SendMessageContext(ctx, channel, options...)
@@ -158,22 +158,21 @@ func (s *SlackSink) Send(ctx context.Context, ev *kube.EnhancedEvent) error {
 
 	if isCompletion {
 		if found {
-			// It's a completion event and we found the parent message.
 			// React to the parent message and remove from map.
-			itemRef := slack.NewRefToMessage(channel, parentTS)
+			itemRef := slack.NewRefToMessage(parentInfo.ChannelID, parentInfo.Timestamp)
 			err = s.client.AddReactionContext(ctx, s.cfg.CompletionEmoji, itemRef)
 			if err != nil {
 				log.Warn().Err(err).Msg("Failed to add reaction to slack message")
 			}
 			delete(s.threadTS, threadKey)
 		}
-		// If not found, it's a completion event without a start. Just sent as a normal message. Nothing more to do.
 	} else {
 		if !found {
-			// It's a new event, so store its timestamp to start a thread.
-			s.threadTS[threadKey] = _ts
+			s.threadTS[threadKey] = threadInfo{
+				Timestamp: _ts,
+				ChannelID: _ch,
+			}
 		}
-		// If found, it's an update. We already posted to the thread. Nothing more to do.
 	}
 
 	return nil
