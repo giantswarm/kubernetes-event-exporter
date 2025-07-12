@@ -74,6 +74,20 @@ receivers:
 * A route can have many sub-routes, forming a tree.
 * Routing starts from the root route.
 
+### Filtering Events at the Source
+
+For high-volume clusters, it is recommended to filter events at the Kubernetes API server level to prevent the exporter from being overwhelmed and dropping important events. You can do this by providing a `watchReasons` list in your configuration. The exporter will only watch for events that have one of the specified reasons.
+
+```yaml
+# Only watch for specific event reasons, filtering out all other noise.
+watchReasons:
+  - Upgrading
+  - Upgraded
+  - FailedCreate
+  - Backoff
+```
+This is the most efficient way to handle noisy environments.
+
 ## Using Secrets
 
 In your config file, you can refer to environment variables as `${API_KEY}` therefore you can use ConfigMap or Secrets 
@@ -211,24 +225,44 @@ exporting events to Slack channels or direct messages to persons. If your object
 Deployments have real owners, you can opt-in to notify them via important events by using the labels of the objects. If
 a Pod sandbox changes and it's restarted, or it cannot find the Docker image, you can immediately notify the owner.
 
+The Slack sink supports advanced features like threaded messages and completion reactions, which is ideal for tracking operations that have a distinct start and end, like a cluster upgrade.
+
+To use the Slack sink, you will need a Slack App with a Bot Token (starting with `xoxb-...`). The app requires the `chat:write` and `reactions:write` permissions.
+
+Here is an example of a single receiver that handles both the start and end of a cluster upgrade in a single thread:
+
 ```yaml
+# in your routes:
+- match:
+  - kind: Cluster
+    # Match either reason using a regex pipe '|'
+    reason: Upgrading|Upgraded
+    # Send both events to the SAME receiver
+    receiver: slack-cluster-upgrade
 # ...
 receivers:
-  - name: "slack"
+  - name: "slack-cluster-upgrade"
     slack:
-      token: YOUR-API-TOKEN-HERE
-      channel: "@{{ .InvolvedObject.Labels.owner }}"
-      message: "{{ .Message }}"
-      color: # optional
-      title: # optional
-      author_name: # optional
-      footer: # optional
-      fields:
-        namespace: "{{ .Namespace }}"
-        reason: "{{ .Reason }}"
-        object: "{{ .Namespace }}"
-
+      token: "${SLACK_BOT_TOKEN}"
+      channel: "#cluster-upgrades"
+      # This key groups messages by the cluster's name.
+      threadKey: "{{ .InvolvedObject.Name }}"
+      # This marks the thread as complete when an "Upgraded" event is seen.
+      completionCondition: '{{ if eq .Reason "Upgraded" }}true{{ end }}'
+      # This emoji is used to react to the first message on completion.
+      completionEmoji: "tada"
+      # Use templates to send different messages for different reasons.
+      message: |
+        {{ if eq .Reason "Upgrading" -}}
+        🚀 The cluster upgrade of *{{ .InvolvedObject.Namespace }}/{{ .InvolvedObject.Name }}* has begun.
+        {{- else -}}
+        ✅ The cluster upgrade of *{{ .InvolvedObject.Namespace }}/{{ .InvolvedObject.Name }}* has completed.
+        {{- end }}
 ```
+
+- `threadKey`: A Go template that evaluates to a unique string. All events with the same `threadKey` will be grouped in the same Slack thread.
+- `completionCondition`: A Go template. If it evaluates to a non-empty string, the event is considered the final event in the thread. The `completionEmoji` will be added as a reaction to the parent message.
+- `completionEmoji`: The name of the emoji (without colons, e.g., `tada`, `white_check_mark`) to use as a reaction when a thread is complete.
 
 ### Kinesis
 
