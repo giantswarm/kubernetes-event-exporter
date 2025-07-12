@@ -6,16 +6,17 @@ import (
 	"sync"
 	"time"
 
+	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/metrics"
 	"github.com/rs/zerolog/log"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/cache"
-
-	"github.com/giantswarm/kubernetes-event-exporter/v2/pkg/metrics"
 )
 
 var startUpTime = time.Now()
@@ -24,7 +25,7 @@ type EventHandler func(event *EnhancedEvent)
 
 type EventWatcher struct {
 	wg                  sync.WaitGroup
-	informer            cache.SharedInformer
+	informers           []cache.SharedInformer
 	stopper             chan struct{}
 	objectMetadataCache ObjectMetadataProvider
 	omitLookup          bool
@@ -36,13 +37,25 @@ type EventWatcher struct {
 	watchKinds          map[string]struct{}
 }
 
-func NewEventWatcher(config *rest.Config, namespace string, MaxEventAgeSeconds int64, metricsStore *metrics.Store, fn EventHandler, omitLookup bool, cacheSize int, watchKinds []string) *EventWatcher {
+func NewEventWatcher(config *rest.Config, namespace string, MaxEventAgeSeconds int64, metricsStore *metrics.Store, fn EventHandler, omitLookup bool, cacheSize int, watchKinds []string, watchReasons []string) *EventWatcher {
 	clientset := kubernetes.NewForConfigOrDie(config)
-	factory := informers.NewSharedInformerFactoryWithOptions(clientset, 0, informers.WithNamespace(namespace))
-	informer := factory.Core().V1().Events().Informer()
+	informerList := make([]cache.SharedInformer, 0)
+
+	if len(watchReasons) == 0 {
+		factory := informers.NewSharedInformerFactoryWithOptions(clientset, 0, informers.WithNamespace(namespace))
+		informerList = append(informerList, factory.Core().V1().Events().Informer())
+	} else {
+		for _, reason := range watchReasons {
+			tweakListOptions := func(options *metav1.ListOptions) {
+				options.FieldSelector = fields.OneTermEqualSelector("reason", reason).String()
+			}
+			factory := informers.NewSharedInformerFactoryWithOptions(clientset, 0, informers.WithNamespace(namespace), informers.WithTweakListOptions(tweakListOptions))
+			informerList = append(informerList, factory.Core().V1().Events().Informer())
+		}
+	}
 
 	watcher := &EventWatcher{
-		informer:            informer,
+		informers:           informerList,
 		stopper:             make(chan struct{}),
 		objectMetadataCache: NewObjectMetadataProvider(cacheSize),
 		omitLookup:          omitLookup,
@@ -54,10 +67,12 @@ func NewEventWatcher(config *rest.Config, namespace string, MaxEventAgeSeconds i
 		watchKinds:          kindsToMap(watchKinds),
 	}
 
-	informer.AddEventHandler(watcher)
-	informer.SetWatchErrorHandler(func(r *cache.Reflector, err error) {
-		watcher.metricsStore.WatchErrors.Inc()
-	})
+	for _, informer := range watcher.informers {
+		informer.AddEventHandler(watcher)
+		informer.SetWatchErrorHandler(func(r *cache.Reflector, err error) {
+			watcher.metricsStore.WatchErrors.Inc()
+		})
+	}
 
 	return watcher
 }
@@ -144,11 +159,13 @@ func (e *EventWatcher) OnDelete(obj interface{}) {
 }
 
 func (e *EventWatcher) Start() {
-	e.wg.Add(1)
-	go func() {
-		defer e.wg.Done()
-		e.informer.Run(e.stopper)
-	}()
+	for _, informer := range e.informers {
+		e.wg.Add(1)
+		go func(i cache.SharedInformer) {
+			defer e.wg.Done()
+			i.Run(e.stopper)
+		}(informer)
+	}
 }
 
 func (e *EventWatcher) Stop() {

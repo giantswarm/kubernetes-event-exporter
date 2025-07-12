@@ -29,6 +29,7 @@ type Config struct {
 	ClusterName        string                    `yaml:"clusterName,omitempty"`
 	Namespace          string                    `yaml:"namespace"`
 	LeaderElection     kube.LeaderElectionConfig `yaml:"leaderElection"`
+	WatchReasons       []string                  `yaml:"watchReasons,omitempty"`
 	Route              Route                     `yaml:"route"`
 	Receivers          []sinks.ReceiverConfig    `yaml:"receivers"`
 	KubeQPS            float32                   `yaml:"kubeQPS,omitempty"`

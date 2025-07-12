@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add optional `watchReasons` configuration to filter events by reason at the Kubernetes API server, preventing dropped events during event storms.
+
 ## [2.0.1] - 2025-07-12
 
 ### Fixed
