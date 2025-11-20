@@ -3,7 +3,6 @@ package sinks
 import (
 	"context"
 	"sort"
-	"sync"
 
 	"github.com/rs/zerolog/log"
 	"github.com/slack-go/slack"
@@ -25,29 +24,36 @@ type SlackConfig struct {
 	// CompletionCondition is a template that should evaluate to a non-empty string for the event that is considered to be the completion of a thread.
 	CompletionCondition string `yaml:"completionCondition,omitempty"`
 	// CompletionEmoji is the emoji to add as a reaction to the first message in a thread when the completion event is received. Defaults to :white_check_mark:
-	CompletionEmoji string `yaml:"completionEmoji,omitempty"`
-}
-
-type threadInfo struct {
-	Timestamp string
-	ChannelID string
+	CompletionEmoji string                `yaml:"completionEmoji,omitempty"`
+	Cache           *ConfigMapCacheConfig `yaml:"cache,omitempty"`
 }
 
 type SlackSink struct {
-	cfg       *SlackConfig
-	client    *slack.Client
-	threadTS  map[string]threadInfo
-	threadMux sync.Mutex
+	cfg    *SlackConfig
+	client *slack.Client
+	cache  ThreadCache
 }
 
 func NewSlackSink(cfg *SlackConfig) (Sink, error) {
 	if cfg.CompletionEmoji == "" {
 		cfg.CompletionEmoji = "white_check_mark"
 	}
+
+	var cache ThreadCache
+	if cfg.Cache != nil {
+		var err error
+		cache, err = NewConfigMapCache(cfg.Cache)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		cache = NewInMemoryCache()
+	}
+
 	return &SlackSink{
-		cfg:      cfg,
-		client:   slack.New(cfg.Token),
-		threadTS: make(map[string]threadInfo),
+		cfg:    cfg,
+		client: slack.New(cfg.Token),
+		cache:  cache,
 	}, nil
 }
 
@@ -141,10 +147,7 @@ func (s *SlackSink) Send(ctx context.Context, ev *kube.EnhancedEvent) error {
 		}
 	}
 
-	s.threadMux.Lock()
-	defer s.threadMux.Unlock()
-
-	parentInfo, found := s.threadTS[threadKey]
+	parentInfo, found := s.cache.Get(threadKey)
 
 	if found {
 		options = append(options, slack.MsgOptionTS(parentInfo.Timestamp))
@@ -164,13 +167,18 @@ func (s *SlackSink) Send(ctx context.Context, ev *kube.EnhancedEvent) error {
 			if err != nil {
 				log.Warn().Err(err).Msg("Failed to add reaction to slack message")
 			}
-			delete(s.threadTS, threadKey)
+			if err := s.cache.Delete(threadKey); err != nil {
+				log.Warn().Err(err).Str("threadKey", threadKey).Msg("Failed to delete thread from cache")
+			}
 		}
 	} else {
 		if !found {
-			s.threadTS[threadKey] = threadInfo{
+			err := s.cache.Set(threadKey, threadInfo{
 				Timestamp: _ts,
 				ChannelID: _ch,
+			})
+			if err != nil {
+				log.Warn().Err(err).Str("threadKey", threadKey).Msg("Failed to set thread in cache")
 			}
 		}
 	}
