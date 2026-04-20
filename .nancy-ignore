@@ -10,4 +10,4 @@ CVE-2025-22870 until=2026-05-10 # golang.org/x/net@v0.17.0
 CVE-2025-22872 until=2026-05-10 # golang.org/x/net@v0.17.0
 CVE-2025-47911 until=2026-05-10 # golang.org/x/net@v0.17.0
 CVE-2025-58190 until=2026-05-10 # golang.org/x/net@v0.17.0
-CVE-2026-33186 until=2026-04-19 # google.golang.org/grpc@v1.53.0
+CVE-2026-33186 until=2026-05-20 # google.golang.org/grpc@v1.53.0
