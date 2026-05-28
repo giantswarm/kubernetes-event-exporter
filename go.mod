@@ -18,7 +18,7 @@ require (
 	github.com/prometheus/exporter-toolkit v0.10.0
 	github.com/rs/zerolog v1.28.0
 	github.com/slack-go/slack v0.12.0
-	github.com/stretchr/testify v1.8.1
+	github.com/stretchr/testify v1.10.0
 	google.golang.org/api v0.107.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	k8s.io/api v0.26.7
@@ -129,3 +129,5 @@ require (
 )
 
 replace github.com/hashicorp/go-retryablehttp v0.7.1 => github.com/hashicorp/go-retryablehttp v0.7.8
+
+replace github.com/sirupsen/logrus v1.9.0 => github.com/sirupsen/logrus v1.9.4
