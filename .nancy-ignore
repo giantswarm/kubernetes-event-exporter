@@ -29,3 +29,4 @@ CVE-2026-39828 until=2026-06-27 # golang.org/x/crypto@v0.17.0
 CVE-2026-39831 until=2026-06-27 # golang.org/x/crypto@v0.17.0
 CVE-2026-39832 until=2026-06-27 # golang.org/x/crypto@v0.17.0
 CVE-2026-33186 until=2026-06-27 # google.golang.org/grpc@v1.53.0
+CVE-2026-32285 until=2026-07-15 # github.com/buger/jsonparser@v1.1.1
