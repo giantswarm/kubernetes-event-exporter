@@ -131,3 +131,9 @@ require (
 replace github.com/hashicorp/go-retryablehttp v0.7.1 => github.com/hashicorp/go-retryablehttp v0.7.8
 
 replace github.com/sirupsen/logrus v1.9.0 => github.com/sirupsen/logrus v1.9.4
+
+replace github.com/golang/glog v1.0.0 => github.com/golang/glog v1.2.5
+
+replace github.com/moby/spdystream v0.2.0 => github.com/moby/spdystream v0.5.1
+
+replace github.com/yuin/goldmark v1.4.13 => github.com/yuin/goldmark v1.8.2
