@@ -1,6 +1,6 @@
 module github.com/giantswarm/kubernetes-event-exporter/v2
 
-go 1.23
+go 1.25.0
 
 require (
 	cloud.google.com/go/bigquery v1.44.0
@@ -58,7 +58,7 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/gnostic v0.6.9 // indirect
-	github.com/google/go-cmp v0.5.9 // indirect
+	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.1 // indirect
@@ -137,3 +137,7 @@ replace github.com/golang/glog v1.0.0 => github.com/golang/glog v1.2.5
 replace github.com/moby/spdystream v0.2.0 => github.com/moby/spdystream v0.5.1
 
 replace github.com/yuin/goldmark v1.4.13 => github.com/yuin/goldmark v1.8.2
+
+replace golang.org/x/sys v0.20.0 => golang.org/x/sys v0.46.0
+
+replace google.golang.org/protobuf v1.30.0 => google.golang.org/protobuf v1.36.11
