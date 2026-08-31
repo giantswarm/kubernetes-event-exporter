@@ -107,7 +107,7 @@ require (
 	golang.org/x/crypto v0.17.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/oauth2 v0.8.0 // indirect
-	golang.org/x/sync v0.2.0 // indirect
+	golang.org/x/sync v0.22.0 // indirect
 	golang.org/x/sys v0.20.0 // indirect
 	golang.org/x/term v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
@@ -141,3 +141,10 @@ replace github.com/yuin/goldmark v1.4.13 => github.com/yuin/goldmark v1.8.2
 replace golang.org/x/sys v0.20.0 => golang.org/x/sys v0.46.0
 
 replace google.golang.org/protobuf v1.30.0 => google.golang.org/protobuf v1.36.11
+
+replace (
+	golang.org/x/mod v0.38.0 => golang.org/x/mod v0.40.0
+	golang.org/x/mod v0.8.0 => golang.org/x/mod v0.40.0
+)
+
+replace golang.org/x/text v0.14.0 => golang.org/x/text v0.41.0
