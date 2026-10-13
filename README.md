@@ -424,7 +424,7 @@ receivers:
 
 Some receivers allow customizing the payload. This can be useful to integrate it to external systems that require the
 data be in some format. It is designed to reduce the need for code writing. It allows mapping an event using Go
-templates, with [sprig](github.com/Masterminds/sprig) library additions. It supports a recursive map definition, so that
+templates, with [sprig](https://github.com/Masterminds/sprig) library additions. It supports a recursive map definition, so that
 you can create virtually any kind of JSON to be pushed to a webhook, a Kinesis stream, SQS queue etc.
 
 ```yaml
